@@ -4,26 +4,20 @@ namespace Universidad.Repositories
 {
     public class EstudianteRepository : IEstudianteRepository
     {
+        private readonly UniversidadDbContext context;
+        public EstudianteRepository(UniversidadDbContext context)
+        {
+            this.context = context;
+        }
         public Estudiante GetEstudiante(int id)
         {
-            return new Estudiante
-            {
-                id = id,
-                nombre = "Pepe",
-                apellido = "Perales",
-                carrera = "Ingeniería de Sistemas",
-                email = "pepe.solo@gmail.com"
-            };
+            return context.Estudiantes.FirstOrDefault(e => e.id == id);// SELECT e.id, e.nombre... FROM Estudiante e WHERE e.id = @id
         }
 
         public IEnumerable<Estudiante> GetEstudiantes()
         {
-            var estudiantes = new List<Estudiante>
-            {
-                new Estudiante { id = 1, nombre = "Pepe", apellido = "Perales", carrera = "Ingeniería de Sistemas", email = "pepe.el.inge@gmail.com" },
-                new Estudiante { id = 2, nombre = "Ana", apellido = "Sosa", carrera = "Admin. de empresas", email = "anita.inc@gmail.com" }
-            };
-            return estudiantes;
+            
+            return context.Estudiantes.ToList();
         }
     }
 }

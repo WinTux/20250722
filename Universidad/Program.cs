@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Universidad.Repositories;
 
 namespace Universidad
@@ -11,6 +12,10 @@ namespace Universidad
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddDbContext<UniversidadDbContext>(options =>
+                options.UseMySql(
+                    builder.Configuration.GetConnectionString("ConexionMySQL"),
+                    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("ConexionMySQL"))));
             builder.Services.AddScoped<IEstudianteRepository, EstudianteRepository>();
 
             var app = builder.Build();
