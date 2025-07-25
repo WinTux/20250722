@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 using Universidad.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Universidad
 {
@@ -16,7 +18,9 @@ namespace Universidad
                 options.UseMySql(
                     builder.Configuration.GetConnectionString("ConexionMySQL"),
                     ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("ConexionMySQL"))));
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IEstudianteRepository, EstudianteRepository>();
+            
 
             var app = builder.Build();
 
