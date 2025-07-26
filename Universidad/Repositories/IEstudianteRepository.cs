@@ -7,7 +7,7 @@ namespace Universidad.Repositories
         IEnumerable<Estudiante> GetEstudiantes();
         Estudiante GetEstudiante(int id);
         void AddEstudiante(Estudiante estudiante);
-
+        void UpdateEstudiante(Estudiante estudiante);
         bool Guardar();
     }
 }

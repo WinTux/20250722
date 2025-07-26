@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Universidad.DTO;
 using Universidad.Models;
@@ -55,6 +56,57 @@ namespace Universidad.Controllers
             }
             var estudianteReadDTO = mapper.Map<EstudianteReadDTO>(estudiante);
             return CreatedAtRoute(nameof(GetEstudianteById), new { id = estudianteReadDTO.id }, estudianteReadDTO);
+        }
+
+        // PUT: api/Estudiante/5
+        [HttpPut("{id}")] // http://localhost:5143/api/Estudiante/5 [PUT]
+        public ActionResult ActualizarEstudiante(int id, EstudianteUpdateDTO estudianteUpdateDTO)
+        {
+            if (estudianteUpdateDTO == null)
+            {
+                return BadRequest("El estudiante no puede ser nulo.");
+            }
+            var estudiante = repo.GetEstudiante(id);
+            if (estudiante == null)
+            {
+                return NotFound();
+            }
+            estudianteUpdateDTO.id = id; // Aseguramos que el ID del DTO sea el mismo que el del estudiante a actualizar
+            mapper.Map(estudianteUpdateDTO, estudiante);// Es una sobrecarga de Map
+            repo.UpdateEstudiante(estudiante);
+            if (!repo.Guardar())
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el estudiante en la base de datos.");
+            }
+            return NoContent();
+        }
+
+        // PATCH: api/Estudiante/5
+        [HttpPatch("{id}")] // http://localhost:5143/api/Estudiante/5 [PATCH]
+        public ActionResult ActualizarEstudiantePorPatch(int id, JsonPatchDocument<EstudianteUpdateDTO> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                return BadRequest("El patch no puede ser nulo.");
+            }
+            var estudiante = repo.GetEstudiante(id);
+            if (estudiante == null)
+            {
+                return NotFound();
+            }
+            var estudianteUpdateDTO = mapper.Map<EstudianteUpdateDTO>(estudiante);
+            patchDoc.ApplyTo(estudianteUpdateDTO, ModelState);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            mapper.Map(estudianteUpdateDTO, estudiante);
+            repo.UpdateEstudiante(estudiante);
+            if (!repo.Guardar())
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar el estudiante en la base de datos.");
+            }
+            return NoContent();
         }
     }
 }

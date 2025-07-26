@@ -34,5 +34,10 @@ namespace Universidad.Repositories
             // La DDBB retorna 1 si se guardó correctamente, 0 si no se guardó nada, -1 si hubo un error
             return context.SaveChanges() >= 0; // Si se guardó al menos un registro, se retorna true
         }
+
+        public void UpdateEstudiante(Estudiante estudiante)
+        {
+            // No es necesario hacer nada aquí, ya que Entity Framework Core rastrea los cambios automáticamente
+        }
     }
 }

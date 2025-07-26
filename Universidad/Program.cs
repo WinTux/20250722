@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Universidad.Repositories;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Serialization;
 
 namespace Universidad
 {
@@ -13,7 +14,9 @@ namespace Universidad
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson(s=>s.SerializerSettings.ContractResolver
+                = new CamelCasePropertyNamesContractResolver());
             builder.Services.AddDbContext<UniversidadDbContext>(options =>
                 options.UseMySql(
                     builder.Configuration.GetConnectionString("ConexionMySQL"),
