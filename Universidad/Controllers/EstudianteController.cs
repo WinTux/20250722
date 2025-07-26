@@ -27,7 +27,7 @@ namespace Universidad.Controllers
             return Ok(mapper.Map<IEnumerable<EstudianteReadDTO>>(estudiantes));
         }
         // GET: api/Estudiante/5
-        [HttpGet("{id}")] // http://localhost:5143/api/Estudiante/5 [GET]
+        [HttpGet("{id}", Name = "GetEstudianteById")] // http://localhost:5143/api/Estudiante/5 [GET]
         public ActionResult<EstudianteReadDTO> GetEstudianteById(int id)
         {
             var estudiante = repo.GetEstudiante(id);
@@ -54,9 +54,7 @@ namespace Universidad.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al guardar el estudiante en la base de datos.");
             }
             var estudianteReadDTO = mapper.Map<EstudianteReadDTO>(estudiante);
-            return CreatedAtAction(nameof(GetEstudianteById), new { id = estudianteReadDTO.id }, estudianteReadDTO);
-
-            // Hablar sobre este return
+            return CreatedAtRoute(nameof(GetEstudianteById), new { id = estudianteReadDTO.id }, estudianteReadDTO);
         }
     }
 }
