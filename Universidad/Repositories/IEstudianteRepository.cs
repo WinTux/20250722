@@ -8,6 +8,7 @@ namespace Universidad.Repositories
         Estudiante GetEstudiante(int id);
         void AddEstudiante(Estudiante estudiante);
         void UpdateEstudiante(Estudiante estudiante);
+        void DeleteEstudiante(Estudiante estudiante);
         bool Guardar();
     }
 }

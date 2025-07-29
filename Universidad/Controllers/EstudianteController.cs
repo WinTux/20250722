@@ -108,5 +108,21 @@ namespace Universidad.Controllers
             }
             return NoContent();
         }
+        // DELETE: api/Estudiante/5
+        [HttpDelete("{id}")] // http://localhost:5143/api/Estudiante/5 [DELETE]
+        public ActionResult EliminarEstudiante(int id)
+        {
+            var estudiante = repo.GetEstudiante(id);
+            if (estudiante == null)
+            {
+                return NotFound();
+            }
+            repo.DeleteEstudiante(estudiante);
+            if (!repo.Guardar())
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error al eliminar el estudiante en la base de datos.");
+            }
+            return NoContent();
+        }
     }
 }

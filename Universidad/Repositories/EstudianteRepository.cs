@@ -18,6 +18,13 @@ namespace Universidad.Repositories
             // Cuando se ejecute SaveChanges, se ejecutará algo como: INSERT INTO Estudiante (nombre, apellido, carrera, email) VALUES (@nombre, @apellido, @carrera, @email)
         }
 
+        public void DeleteEstudiante(Estudiante estudiante)
+        {
+            if (estudiante == null)
+                throw new ArgumentNullException(nameof(estudiante), "El estudiante no puede ser nulo.");
+            context.Estudiantes.Remove(estudiante);
+        }
+
         public Estudiante GetEstudiante(int id)
         {
             return context.Estudiantes.FirstOrDefault(e => e.id == id);// SELECT e.id, e.nombre... FROM Estudiante e WHERE e.id = @id
