@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Universidad.ComunicacionSync.http;
 using Universidad.DTO;
 using Universidad.Models;
 using Universidad.Repositories;
@@ -14,11 +15,13 @@ namespace Universidad.Controllers
     {
         private readonly IEstudianteRepository repo;
         private readonly IMapper mapper;
+        private readonly ICampusHistorialCliente campusHistorialCliente;
 
-        public EstudianteController(IEstudianteRepository est, IMapper mapper)
+        public EstudianteController(IEstudianteRepository est, IMapper mapper, ICampusHistorialCliente campusHistorialCliente)
         {
             repo = est;
             this.mapper = mapper;
+            this.campusHistorialCliente = campusHistorialCliente;
         }
         // GET: api/Estudiante
         [HttpGet] // http://localhost:5143/api/Estudiante [GET]
@@ -55,6 +58,15 @@ namespace Universidad.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al guardar el estudiante en la base de datos.");
             }
             var estudianteReadDTO = mapper.Map<EstudianteReadDTO>(estudiante);
+            // Comunicarse con el servicio de Campus para registrar el estudiante
+            try
+            {
+                campusHistorialCliente.ComunicarseConCampus(estudianteReadDTO);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error al comunicarse con el servicio de Campus: {ex.Message}");
+            }
             return CreatedAtRoute(nameof(GetEstudianteById), new { id = estudianteReadDTO.id }, estudianteReadDTO);
         }
 

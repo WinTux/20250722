@@ -3,6 +3,7 @@ using AutoMapper;
 using Universidad.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
+using Universidad.ComunicacionSync.http;
 
 namespace Universidad
 {
@@ -23,7 +24,7 @@ namespace Universidad
                     ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("ConexionMySQL"))));
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IEstudianteRepository, EstudianteRepository>();
-            
+            builder.Services.AddHttpClient<ICampusHistorialCliente,ImplCampusHistorialCliente>();
 
             var app = builder.Build();
 

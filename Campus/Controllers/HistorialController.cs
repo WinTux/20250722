@@ -20,8 +20,8 @@ namespace Campus.Controllers
         [HttpPost]
         public ActionResult Post()
         {
-            Console.WriteLine("Llegó un apetición por POST");
-            Debug.WriteLine("Llegó un apetición por POST");
+            Console.WriteLine("Llegó una petición por POST");
+            Debug.WriteLine("Llegó una petición por POST");
             return Ok("Post recibido correctamente en HistorialController");
         }
     }
