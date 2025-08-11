@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: mimysqlservice
-          image: MySQL:8.0
+          image: mysql:8.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3306
@@ -34,7 +34,7 @@ spec:
                 name: mysql-secreto
                 key: userpassword
           volumeMounts:
-          - mountPath: /var/lib/MySQL
+          - mountPath: /var/lib/mysql
             name: mivolumenparamysql
       volumes:
         - name: mivolumenparamysql
