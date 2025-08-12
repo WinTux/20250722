@@ -18,10 +18,20 @@ namespace Universidad
             builder.Services.AddControllers()
                 .AddNewtonsoftJson(s=>s.SerializerSettings.ContractResolver
                 = new CamelCasePropertyNamesContractResolver());
-            builder.Services.AddDbContext<UniversidadDbContext>(options =>
-                options.UseMySql(
-                    builder.Configuration.GetConnectionString("ConexionMySQL"),
-                    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("ConexionMySQL"))));
+            if (builder.Environment.IsProduction())
+            {
+                builder.Services.AddDbContext<UniversidadDbContext>(options =>
+                    options.UseMySql(
+                        builder.Configuration.GetConnectionString("ConexionMySQLProduccion"),
+                        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("ConexionMySQLProduccion"))));
+            }
+            else {
+                builder.Services.AddDbContext<UniversidadDbContext>(options =>
+                    options.UseMySql(
+                        builder.Configuration.GetConnectionString("ConexionMySQL"),
+                        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("ConexionMySQL"))));
+            }
+                
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IEstudianteRepository, EstudianteRepository>();
             builder.Services.AddHttpClient<ICampusHistorialCliente,ImplCampusHistorialCliente>();
