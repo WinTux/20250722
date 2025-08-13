@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Universidad.ComunicacionAsync;
 using Universidad.ComunicacionSync.http;
 using Universidad.DTO;
 using Universidad.Models;
@@ -16,12 +17,14 @@ namespace Universidad.Controllers
         private readonly IEstudianteRepository repo;
         private readonly IMapper mapper;
         private readonly ICampusHistorialCliente campusHistorialCliente;
+        private readonly IBusDeMensajesCliente busDeMensajesCliente;
 
-        public EstudianteController(IEstudianteRepository est, IMapper mapper, ICampusHistorialCliente campusHistorialCliente)
+        public EstudianteController(IEstudianteRepository est, IMapper mapper, ICampusHistorialCliente campusHistorialCliente, IBusDeMensajesCliente busDeMensajesCliente)
         {
             repo = est;
             this.mapper = mapper;
             this.campusHistorialCliente = campusHistorialCliente;
+            this.busDeMensajesCliente = busDeMensajesCliente;
         }
         // GET: api/Estudiante
         [HttpGet] // http://localhost:5143/api/Estudiante [GET]
@@ -66,6 +69,14 @@ namespace Universidad.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error al comunicarse con el servicio de Campus: {ex.Message}");
+            }
+            try {
+                var estudiantePubDTO = mapper.Map<EstudiantePublisherDTO>(estudianteReadDTO);
+                estudiantePubDTO.tipoEvento = "Estudiante_Registrado";
+                busDeMensajesCliente.PublicarNuevoEstudiante(estudiantePubDTO);
+            }
+            catch (Exception e) { 
+                Console.WriteLine("No se pudo enviar el mensaje a RabbitMQ: " + e.Message);
             }
             return CreatedAtRoute(nameof(GetEstudianteById), new { id = estudianteReadDTO.id }, estudianteReadDTO);
         }

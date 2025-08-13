@@ -4,6 +4,7 @@ using Universidad.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using Universidad.ComunicacionSync.http;
+using Universidad.ComunicacionAsync;
 
 namespace Universidad
 {
@@ -35,7 +36,7 @@ namespace Universidad
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IEstudianteRepository, EstudianteRepository>();
             builder.Services.AddHttpClient<ICampusHistorialCliente,ImplCampusHistorialCliente>();
-
+            builder.Services.AddSingleton<IBusDeMensajesCliente, ImplBusDeMensajesCliente>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

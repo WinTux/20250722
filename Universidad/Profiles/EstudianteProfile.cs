@@ -9,6 +9,7 @@ namespace Universidad.Profiles
             CreateMap<DTO.EstudianteCreateDTO, Models.Estudiante>();
             CreateMap<DTO.EstudianteUpdateDTO, Models.Estudiante>();
             CreateMap<Models.Estudiante, DTO.EstudianteUpdateDTO>();
+            CreateMap<DTO.EstudianteReadDTO, DTO.EstudiantePublisherDTO>();
         }
     }
 }
