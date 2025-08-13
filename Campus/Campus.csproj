@@ -6,4 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Conexion\" />
+  </ItemGroup>
+
 </Project>

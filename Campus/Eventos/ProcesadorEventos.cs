@@ -1,17 +1,23 @@
 ﻿
+using AutoMapper;
 using Campus.DTO;
 using Campus.Models;
+using Campus.Repositories;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using System.Text.Json;
 
 namespace Campus.Eventos
 {
     public class ProcesadorEventos : IProcesadorEventos
     {
         private readonly IServiceScopeFactory serviceScopeFactory;
+        private readonly IMapper mapper;
+
         // Acá inyectaríamos un mapper, de ser necesario.
-        public ProcesadorEventos(IServiceScopeFactory serviceScopeFactory)
+        public ProcesadorEventos(IServiceScopeFactory serviceScopeFactory, IMapper mapper)
         {
             this.serviceScopeFactory = serviceScopeFactory;
+            this.mapper = mapper;
         }
         public void ProcesarEvento(string tipoS)
         {
@@ -35,22 +41,26 @@ namespace Campus.Eventos
             }
         }
         private void agregarEstudiante(string mensajeEstudiantePublisher) {
-            using (var scope = serviceScopeFactory.CreateScope()) {
-                var repo = scope.ServiceProvider.GetRequiredService<IEstudianteRepository>();
-                EstudiantePublisherDTO estudiantePub = System.Text.Json.JsonSerializer.Deserialize<EstudiantePublisherDTO>(mensajeEstudiantePublisher);
+            using (var alcance = serviceScopeFactory.CreateScope())
+            {
+                var repo = alcance.ServiceProvider.GetRequiredService<IPerfilRepository>();
+                var estudiantePublisherDTO = JsonSerializer.Deserialize<EstudiantePublisherDTO>(mensajeEstudiantePublisher);
                 try
                 {
-                    Estudiante est = mapper.Map<Estudiante>(estudiantePub);
-                    if (repo.GetEstudiantePorIdentificacion(est.id) == null)
+                    var est = mapper.Map<Estudiante>(estudiantePublisherDTO);
+                    if (!repo.ExisteEstudianteForaneo(est.fci))
                     {
-                        repo.AddEstudiante(est);
+                        repo.CrearEstudiante(est);
                         repo.Guardar();
-                        Console.WriteLine(">> Estudiante agregado a la base de datos del Campus.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"El estudiante {est.fci} ya existe en la base de datos.");
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(">> Error al agregar el estudiante a la base de datos del Campus: " + e.Message);
+                    Console.WriteLine($"Error al agregar el estudiante: {e.Message}");
                 }
             }
         }
